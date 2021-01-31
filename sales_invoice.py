@@ -21,19 +21,6 @@ try:
     h = int(input("Enter your highest limit : "))
     chunk = int(input("Data Chunk size : "))
 
-'''
-####Use this portion of the code only if you need to export the data to mysql database
-    MYSQL_USER = str(input("Enter MYSQL_USER : "))
-    MYSQL_PASSWORD = str(input("Enter MYSQL_PASSWORD : "))
-    MYSQL_HOST_IP = str(input("Enter MYSQL_HOST_IP : "))
-    MYSQL_PORT = int(input("Enter MYSQL_PORT : "))
-    MYSQL_DATABASE = str(input("Enter MYSQL_DATABASE Schema Name : "))
-    tableName = str(input("Enter tableName : "))
-
-
-
-'''
-   
 
 except Exception as ex:   
     print(ex)
@@ -228,6 +215,34 @@ print(df4.head())
 print(df5.head())
 
 ######
+
+#####################
+###if you've decided to export data to mysql then use this portion after uncommenting the mysql section above
+
+####Use this portion of the code only if you need to export the data to mysql database
+    MYSQL_USER = str(input("Enter MYSQL_USER : "))
+    MYSQL_PASSWORD = str(input("Enter MYSQL_PASSWORD : "))
+    MYSQL_HOST_IP = str(input("Enter MYSQL_HOST_IP : "))
+    MYSQL_PORT = int(input("Enter MYSQL_PORT : "))
+    MYSQL_DATABASE = str(input("Enter MYSQL_DATABASE Schema Name : "))
+    tableName = str(input("Enter tableName : "))
+
+sqlEngine = create_engine('mysql+mysqlconnector://'+MYSQL_USER+':'+MYSQL_PASSWORD+'@'+MYSQL_HOST_IP+':'+str(MYSQL_PORT)+'/'+MYSQL_DATABASE, echo=False)
+dbConnection = sqlEngine.connect()
+
+try:
+    frame   = df.to_sql(tableName, dbConnection, if_exists='fail');
+except ValueError as vx:
+    print(vx)
+except Exception as ex:   
+    print(ex)
+else:
+    print("Table %s created successfully."%tableName);   
+finally:
+    dbConnection.close()
+
+
+   
 """
 serial = []
 x = len(df5.columns)
@@ -315,25 +330,7 @@ for i in range(l):
 df.columns = s
 
 """
-'''
 
-#####################
-###if you've decided to export data to mysql then use this portion after uncommenting the mysql section above
-
-
-sqlEngine = create_engine('mysql+mysqlconnector://'+MYSQL_USER+':'+MYSQL_PASSWORD+'@'+MYSQL_HOST_IP+':'+str(MYSQL_PORT)+'/'+MYSQL_DATABASE, echo=False)
-dbConnection = sqlEngine.connect()
-
-try:
-    frame   = df.to_sql(tableName, dbConnection, if_exists='fail');
-except ValueError as vx:
-    print(vx)
-except Exception as ex:   
-    print(ex)
-else:
-    print("Table %s created successfully."%tableName);   
-finally:
-    dbConnection.close()
 
 
 
